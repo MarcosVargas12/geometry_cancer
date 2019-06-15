@@ -31,7 +31,6 @@ window.addEventListener('click', function(event) {
 
 let circleArray =[];
 
-
 class Circle {
     constructor (x, y, dx, dy, radius, colorFill, id) {
         this.x = x;
@@ -70,7 +69,6 @@ class Circle {
                         score += 1;
                     }
                 }
-            }
             else if (this.radius > this.minRadius) {
                 this.radius -= 1;
             }
