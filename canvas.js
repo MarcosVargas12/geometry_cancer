@@ -7,6 +7,7 @@ var c = canvas.getContext('2d');
 
 // prueba 2 de circulo animado: 
 let score = 0;
+let time = 100;
 let mouse = {
     x: undefined,
     y: undefined
@@ -22,7 +23,7 @@ window.addEventListener('mousemove',function(event) {
     mouse.y = event.y;
 })
 
-window.addEventListener('click', function(event){
+window.addEventListener('click', function(event) {
     if (radius_button + event.x > x_button || event.x - radius_button < x_button){
         animate();
     }
@@ -31,54 +32,50 @@ window.addEventListener('click', function(event){
 let circleArray =[];
 
 
-function Circle(x, y, dx, dy, radius, colorFill, id) {
-    this.x = x;
-    this.y = y;
-    this.dx = dx;
-    this.dy = dy;
-    this.radius = radius;
-    this.minRadius = radius;
-    this.colorFill = colorFill;
-    this.id = id;
+class Circle {
+    constructor (x, y, dx, dy, radius, colorFill, id) {
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.radius = radius;
+        this.minRadius = radius;
+        this.colorFill = colorFill;
+        this.id = id;
+        this.draw = function () {
+            c.beginPath();
+            c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+            c.fillStyle = this.colorFill;
+            c.fill();
+        };
+        this.update = function () {
+            if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+                this.dx = -this.dx;
+            }
+            if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+                this.dy = -this.dy;
+            }
+            this.x += this.dx;
+            this.y += this.dy;
 
-    this.draw = function() {
-        c.beginPath();
-        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        c.fillStyle = this.colorFill
-        c.fill();
-    }
-
-    this.update = function() {
-        
-        if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
-            this.dx = -this.dx;
-        }
-        
-        if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
-            this.dy = -this.dy;
-        }
-            
-        this.x += this.dx;
-        this.y += this.dy;
-
-        //interactivity begin
-
-        if (mouse.x - this.x < 50 && 
-            mouse.x - this.x > -50 && 
-            mouse.y - this.y < 50 && 
-            mouse.y - this.y > -50){
-            if (this.radius < maxRadius){
-                this.radius +=1; 
-                if (this.radius >= maxRadius){
-                circleArray.splice(this.id,1)
-                score+=1
+            //Kill them all!!
+            if (mouse.x - this.x < 50 &&
+                mouse.x - this.x > -50 &&
+                mouse.y - this.y < 50 &&
+                mouse.y - this.y > -50) {
+                if (this.radius < maxRadius) {
+                    this.radius += 1;
+                    if (this.radius >= maxRadius) {
+                        circleArray.splice(this.id, 1);
+                        score += 1;
+                    }
                 }
             }
-        } else if (this.radius > this.minRadius){
-            this.radius -=1
+            else if (this.radius > this.minRadius) {
+                this.radius -= 1;
+            }
+            this.draw();
         }
-
-        this.draw();
     }
 }
 
@@ -88,8 +85,8 @@ for (var i = 0; i < 100; i++) {
     let radius = Math.random() * 10 + 1;
     let x = Math.random() * (innerWidth - radius * 2) + radius;
     let y = Math.random() * (innerHeight - radius * 2) + radius;
-    let dx = (Math.random() - 0.1) * 5;
-    let dy = (Math.random() - 0.1) * 5;
+    let dx = (Math.random() - 0.5) * 5;
+    let dy = (Math.random() - 0.5) * 5;
     let colorFill = `rgba(${Math.random() * 50},${Math.random() * 255},${Math.random() * 2550},${Math.random()})`;
     
     circleArray.push(new Circle (x, y, dx, dy, radius, colorFill, i));
@@ -98,31 +95,32 @@ for (var i = 0; i < 100; i++) {
 function animate() {
 
     requestAnimationFrame(animate);
-    c.clearRect(0,0, innerWidth,innerHeight);
-    for (var i = 0; i < circleArray.length;i++){
+    c.clearRect(0,0, innerWidth, innerHeight);
+    for (var i = 0; i < circleArray.length; i++){
         circleArray[i].update();
     }
     //Puntaje
     c.beginPath();
-    c.fillStyle= `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`;
+    c.fillStyle= `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1`;
     c.font = '70px Roboto';
     c.fillText('Puntaje: ' + score, innerWidth - innerWidth * .9, innerHeight - innerHeight * .9);
 
     //Tiempo
     c.beginPath();
-    c.fillStyle= `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`;
+    c.fillStyle= `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1`;
     c.font = '70px Roboto';
     c.fillText('Tiempo: ' + time, innerWidth - innerWidth * .3, innerHeight - innerHeight * .9);
 }
 
+
+//Boton de inicio
 c.beginPath();
 c.arc(innerWidth/2, innerHeight/2, radius_button, 0, Math.PI * 2, false);
 c.fillStyle = '`rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`';
 c.fill()
-
 c.font = '60px Roboto';
-c.fillStyle = 'white'
-c.fillText('Go', (innerWidth/2)-35,innerHeight/2+20);
+c.fillStyle = 'white';
+c.fillText('Go!', (innerWidth/2)-35,innerHeight/2+20);
 
 // function animate() {
 //     requestAnimationFrame(animate);
