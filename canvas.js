@@ -4,19 +4,18 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 var c = canvas.getContext('2d');
-var d = canvas.getContext('3d');
-let time = 0;
+
 // prueba 2 de circulo animado: 
 let score = 0;
-var mouse = {
+let mouse = {
     x: undefined,
     y: undefined
 }
 
-var maxRadius = 80;
-var x_button = innerWidth/2;
-var y_button = innerHeight/2;
-var radius_button = 40;
+let maxRadius = 80;
+let x_button = innerWidth/2;
+let y_button = innerHeight/2;
+let radius_button = 200;
 
 window.addEventListener('mousemove',function(event) {
     mouse.x = event.x;
@@ -29,7 +28,7 @@ window.addEventListener('click', function(event){
     }
 })
 
-var circleArray =[];
+let circleArray =[];
 
 
 function Circle(x, y, dx, dy, radius, colorFill, id) {
@@ -68,16 +67,12 @@ function Circle(x, y, dx, dy, radius, colorFill, id) {
             mouse.x - this.x > -50 && 
             mouse.y - this.y < 50 && 
             mouse.y - this.y > -50){
-
             if (this.radius < maxRadius){
                 this.radius +=1; 
-                if (this.radius > maxRadius){
-                    //debugger
-                circleArray.splice(this.id, 1)
+                if (this.radius >= maxRadius){
+                circleArray.splice(this.id,1)
                 score+=1
-                
-            }
-
+                }
             }
         } else if (this.radius > this.minRadius){
             this.radius -=1
@@ -87,51 +82,47 @@ function Circle(x, y, dx, dy, radius, colorFill, id) {
     }
 }
 
+//Circles 
 
 for (var i = 0; i < 100; i++) {
-    var radius = Math.random() * 10 + 1;
-    var x = Math.random() * (innerWidth - radius * 2) + radius;
-    var y = Math.random() * (innerHeight - radius * 2) + radius;
-    var dx = (Math.random() - 0.5) * 5;
-    var dy = (Math.random() - 0.5) * 5;
-    var colorFill = `rgba(${Math.random() * 50},${Math.random() * 255},${Math.random() * 2550},${Math.random()})`
+    let radius = Math.random() * 10 + 1;
+    let x = Math.random() * (innerWidth - radius * 2) + radius;
+    let y = Math.random() * (innerHeight - radius * 2) + radius;
+    let dx = (Math.random() - 0.1) * 5;
+    let dy = (Math.random() - 0.1) * 5;
+    let colorFill = `rgba(${Math.random() * 50},${Math.random() * 255},${Math.random() * 2550},${Math.random()})`;
     
-    circleArray.push(new Circle (x, y, dx, dy, radius, colorFill, i))
-    
+    circleArray.push(new Circle (x, y, dx, dy, radius, colorFill, i));
 }
 
 function animate() {
-    
-    time +=1
+
     requestAnimationFrame(animate);
     c.clearRect(0,0, innerWidth,innerHeight);
     for (var i = 0; i < circleArray.length;i++){
         circleArray[i].update();
     }
-
-    
+    //Puntaje
     c.beginPath();
-    c.fillStyle= `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`
-    c.font = '70px Courier'
-    c.fillText('Puntaje: ' + score, innerWidth*.05, innerHeight/15);
+    c.fillStyle= `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`;
+    c.font = '70px Roboto';
+    c.fillText('Puntaje: ' + score, innerWidth - innerWidth * .9, innerHeight - innerHeight * .9);
 
-
+    //Tiempo
     c.beginPath();
-    c.fillStyle= `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`
-    c.font = '70px Courier'
-    c.fillText('Tiempo: ' + time, innerWidth*.8, innerHeight/15)
-   
-
-    console.log(circleArray.length)
+    c.fillStyle= `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`;
+    c.font = '70px Roboto';
+    c.fillText('Tiempo: ' + time, innerWidth - innerWidth * .3, innerHeight - innerHeight * .9);
 }
 
-//animate();
+c.beginPath();
+c.arc(innerWidth/2, innerHeight/2, radius_button, 0, Math.PI * 2, false);
+c.fillStyle = '`rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`';
+c.fill()
 
-
-    c.beginPath();
-    c.arc(innerWidth/2, innerHeight/2, radius_button, 0, Math.PI * 2, false);
-    c.fillStyle= `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1`
-    c.fill()
+c.font = '60px Roboto';
+c.fillStyle = 'white'
+c.fillText('Go', (innerWidth/2)-35,innerHeight/2+20);
 
 // function animate() {
 //     requestAnimationFrame(animate);
