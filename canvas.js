@@ -1,3 +1,4 @@
+
 var canvas = document.querySelector('canvas');
 
 canvas.width = window.innerWidth;
@@ -30,6 +31,7 @@ window.addEventListener('click', function(event) {
 })
 
 let circleArray =[];
+let i = 0;
 
 class Circle {
     constructor (x, y, dx, dy, radius, colorFill, id) {
@@ -64,11 +66,19 @@ class Circle {
                 mouse.y - this.y > -50) {
                 if (this.radius < maxRadius) {
                     this.radius += 1;
+                    //console.log(this.radius)
                     if (this.radius >= maxRadius) {
-                        circleArray.splice(this.id, 1);
+                        //console.log(this.id, circleArray[this.id])
+                        let indice = circleArray.findIndex((element, index, array)=>{
+                            //console.log(element)
+                            return element.id === this.id
+                        }, this)
+                        //console.log(`El indice a borrar es `, indice)
+                        circleArray.splice(indice, 1);
                         score += 1;
                     }
                 }
+            }
             else if (this.radius > this.minRadius) {
                 this.radius -= 1;
             }
@@ -78,15 +88,14 @@ class Circle {
 }
 
 //Circles 
-
-for (var i = 0; i < 100; i++) {
+for(let i = 0; i < 200; i++) {
     let radius = Math.random() * 10 + 1;
     let x = Math.random() * (innerWidth - radius * 2) + radius;
     let y = Math.random() * (innerHeight - radius * 2) + radius;
     let dx = (Math.random() - 0.5) * 5;
     let dy = (Math.random() - 0.5) * 5;
     let colorFill = `rgba(${Math.random() * 50},${Math.random() * 255},${Math.random() * 2550},${Math.random()})`;
-    
+
     circleArray.push(new Circle (x, y, dx, dy, radius, colorFill, i));
 }
 
